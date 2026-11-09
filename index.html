@@ -3,105 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Scientific Calculator</title>
-  
+  <title>Scientific Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen flex items-center justify-center p-2 sm:p-4 selection:bg-blue-500 selection:text-white">
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-slate-950 text-slate-100">
 
-  <div class="relative w-full max-w-md glass-panel rounded-3xl p-4 sm:p-6 shadow-2xl border border-gray-800 overflow-hidden">
+  <div class="relative w-full max-w-md glass-panel rounded-3xl p-4 sm:p-6 shadow-2xl border border-slate-800 overflow-hidden">
     
+    <!-- Top Bar Controls -->
     <div class="flex items-center justify-between mb-3 text-xs font-semibold tracking-wider">
       <div class="flex items-center gap-2">
-        <button id="angleUnitBtn" onclick="toggleAngleUnit()" class="px-2.5 py-1 rounded-lg bg-indigo-900/40 text-indigo-400 border border-indigo-700/50 hover:bg-indigo-800/50 transition">
+        <button id="angleUnitBtn" class="px-3 py-1 rounded-lg bg-indigo-900/50 text-indigo-300 border border-indigo-700/50 hover:bg-indigo-800/60 transition">
           DEG
         </button>
-        <button id="hypBtn" onclick="toggleHyp()" class="px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400 border border-gray-700/50 hover:bg-gray-700 transition">
+        <button id="hypBtn" class="px-3 py-1 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition">
           HYP
         </button>
       </div>
-      <div class="flex items-center gap-2 text-gray-400">
-        <button onclick="toggleHistory()" title="History" class="p-1.5 rounded-lg hover:bg-gray-800 transition">
+      <div class="flex items-center gap-2 text-slate-400">
+        <button id="historyToggleBtn" title="History" class="p-1.5 rounded-lg hover:bg-slate-800 transition">
           <i class="fa-solid fa-clock-rotate-left text-sm"></i>
         </button>
       </div>
     </div>
 
-    <div class="bg-gray-950/80 rounded-2xl p-4 mb-4 border border-gray-800/80 shadow-inner flex flex-col justify-between h-32 relative overflow-hidden">
-      
-      <div id="expressionDisplay" class="font-mono-custom text-gray-400 text-sm overflow-x-auto whitespace-nowrap text-right custom-scrollbar h-6"></div>
-      
+    <!-- Display Screen -->
+    <div class="bg-slate-900/90 rounded-2xl p-4 mb-4 border border-slate-800 shadow-inner flex flex-col justify-between h-32 relative overflow-hidden">
+      <div id="expressionDisplay" class="font-mono-custom text-slate-400 text-sm overflow-x-auto whitespace-nowrap text-right custom-scrollbar h-6"></div>
       <div id="mainDisplay" class="font-mono-custom text-white text-3xl sm:text-4xl font-bold tracking-tight overflow-x-auto whitespace-nowrap text-right custom-scrollbar py-1">
         0
       </div>
     </div>
 
+    <!-- Keypad Grid -->
     <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
       
-      <button onclick="memoryClear()" class="btn-calc py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-800">MC</button>
-      <button onclick="memoryRecall()" class="btn-calc py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-800">MR</button>
-      <button onclick="memoryAdd()" class="btn-calc py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-800">M+</button>
-      <button onclick="memorySubtract()" class="btn-calc py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-800">M-</button>
-      <button onclick="memoryStore()" class="btn-calc py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-800">MS</button>
+      <!-- Row 0: Memory Keys -->
+      <button data-action="mc" class="btn-calc py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800">MC</button>
+      <button data-action="mr" class="btn-calc py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800">MR</button>
+      <button data-action="m-add" class="btn-calc py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800">M+</button>
+      <button data-action="m-sub" class="btn-calc py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800">M-</button>
+      <button data-action="ms" class="btn-calc py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800">MS</button>
 
-      <button id="secondFuncBtn" onclick="toggleSecondFunction()" class="btn-calc py-2.5 rounded-xl bg-amber-900/30 text-amber-400 border border-amber-800/40 hover:bg-amber-800/40">2nd</button>
-      <button onclick="appendConstant('π')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">π</button>
-      <button onclick="appendConstant('e')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">e</button>
-      <button onclick="clearAll()" class="btn-calc py-2.5 rounded-xl bg-red-950/50 text-red-400 border border-red-900/40 hover:bg-red-900/50">AC</button>
-      <button onclick="backspace()" class="btn-calc py-2.5 rounded-xl bg-red-950/30 text-red-400 border border-red-900/30 hover:bg-red-900/40"><i class="fa-solid fa-backspace"></i></button>
+      <!-- Row 1 -->
+      <button id="secondFuncBtn" data-action="2nd" class="btn-calc py-2.5 rounded-xl bg-amber-950/40 text-amber-400 border border-amber-900/40 hover:bg-amber-900/50">2nd</button>
+      <button data-action="const-pi" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">π</button>
+      <button data-action="const-e" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">e</button>
+      <button data-action="clear" class="btn-calc py-2.5 rounded-xl bg-red-950/50 text-red-400 border border-red-900/40 hover:bg-red-900/50">AC</button>
+      <button data-action="backspace" class="btn-calc py-2.5 rounded-xl bg-red-950/30 text-red-400 border border-red-900/30 hover:bg-red-900/40"><i class="fa-solid fa-backspace"></i></button>
 
-      <button id="btnSin" onclick="handleTrig('sin')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">sin</button>
-      <button id="btnCos" onclick="handleTrig('cos')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">cos</button>
-      <button id="btnTan" onclick="handleTrig('tan')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">tan</button>
-      <button onclick="appendValue('(')" class="btn-calc py-2.5 rounded-xl bg-gray-800/60 text-gray-300 border border-gray-700/50 hover:bg-gray-700/60">(</button>
-      <button onclick="appendValue(')')" class="btn-calc py-2.5 rounded-xl bg-gray-800/60 text-gray-300 border border-gray-700/50 hover:bg-gray-700/60">)</button>
+      <!-- Row 2 -->
+      <button id="btnSin" data-action="func-trig" data-trig="sin" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">sin</button>
+      <button id="btnCos" data-action="func-trig" data-trig="cos" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">cos</button>
+      <button id="btnTan" data-action="func-trig" data-trig="tan" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">tan</button>
+      <button data-val="(" class="btn-calc py-2.5 rounded-xl bg-slate-800/60 text-slate-300 border border-slate-700/50 hover:bg-slate-700/60">(</button>
+      <button data-val=")" class="btn-calc py-2.5 rounded-xl bg-slate-800/60 text-slate-300 border border-slate-700/50 hover:bg-slate-700/60">)</button>
 
-      <button id="btnPower2" onclick="handlePower2()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">x²</button>
-      <button id="btnPowerY" onclick="appendOperator('^')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">x^y</button>
-      <button id="btnLog" onclick="handleLog()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">log</button>
-      <button id="btnLn" onclick="handleLn()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">ln</button>
-      <button onclick="appendOperator('%')" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">%</button>
+      <!-- Row 3 -->
+      <button id="btnPower2" data-action="func-power2" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">x²</button>
+      <button id="btnPowerY" data-action="func-powery" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">x^y</button>
+      <button id="btnLog" data-action="func-log" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">log</button>
+      <button id="btnLn" data-action="func-ln" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">ln</button>
+      <button data-op="%" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">%</button>
 
-      <button id="btnRoot" onclick="handleRoot()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">√x</button>
-      <button onclick="appendValue('7')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">7</button>
-      <button onclick="appendValue('8')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">8</button>
-      <button onclick="appendValue('9')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">9</button>
-      <button onclick="appendOperator('÷')" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">÷</button>
+      <!-- Row 4 -->
+      <button id="btnRoot" data-action="func-root" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">√x</button>
+      <button data-val="7" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">7</button>
+      <button data-val="8" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">8</button>
+      <button data-val="9" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">9</button>
+      <button data-op="÷" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">÷</button>
 
-      <button onclick="handleFactorial()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">n!</button>
-      <button onclick="appendValue('4')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">4</button>
-      <button onclick="appendValue('5')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">5</button>
-      <button onclick="appendValue('6')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">6</button>
-      <button onclick="appendOperator('×')" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">×</button>
+      <!-- Row 5 -->
+      <button data-action="func-fact" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">n!</button>
+      <button data-val="4" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">4</button>
+      <button data-val="5" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">5</button>
+      <button data-val="6" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">6</button>
+      <button data-op="×" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">×</button>
 
-      <button onclick="handleReciprocal()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">1/x</button>
-      <button onclick="appendValue('1')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">1</button>
-      <button onclick="appendValue('2')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">2</button>
-      <button onclick="appendValue('3')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">3</button>
-      <button onclick="appendOperator('-')" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">-</button>
+      <!-- Row 6 -->
+      <button data-action="func-recip" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">1/x</button>
+      <button data-val="1" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">1</button>
+      <button data-val="2" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">2</button>
+      <button data-val="3" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">3</button>
+      <button data-op="-" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">-</button>
 
-      <button onclick="handleAbs()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">|x|</button>
-      <button onclick="toggleSign()" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">±</button>
-      <button onclick="appendValue('0')" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">0</button>
-      <button onclick="appendDecimal()" class="btn-calc py-2.5 rounded-xl bg-gray-800/40 text-gray-100 hover:bg-gray-700/50 border border-gray-700/40">.</button>
-      <button onclick="appendOperator('+')" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">+</button>
+      <!-- Row 7 -->
+      <button data-action="func-abs" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">|x|</button>
+      <button data-action="sign" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">±</button>
+      <button data-val="0" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">0</button>
+      <button data-action="dot" class="btn-calc py-2.5 rounded-xl bg-slate-800/40 text-slate-100 hover:bg-slate-700/50 border border-slate-700/40">.</button>
+      <button data-op="+" class="btn-calc py-2.5 rounded-xl bg-cyan-950/40 text-cyan-400 border border-cyan-900/40 hover:bg-cyan-900/50">+</button>
 
-      <button onclick="appendConstant('ϕ')" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">ϕ</button>
-      <button onclick="appendRandom()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">Rand</button>
-      <button id="btnTenPower" onclick="handleTenPower()" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">10ⁿ</button>
-      <button onclick="calculateResult()" class="btn-calc col-span-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-600/30">=</button>
+      <!-- Row 8 -->
+      <button data-action="const-phi" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">ϕ</button>
+      <button data-action="rand" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">Rand</button>
+      <button id="btnTenPower" data-action="func-tenpow" class="btn-calc py-2.5 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/40 hover:bg-indigo-900/50">10ⁿ</button>
+      <button data-action="equals" class="btn-calc col-span-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-600/30">=</button>
     </div>
 
-    <div id="historyPanel" class="absolute inset-0 bg-gray-950/95 backdrop-blur-md p-4 transition-transform translate-y-full duration-300 flex flex-col z-20">
-      <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-3">
-        <h3 class="font-bold text-gray-200 text-base">Calculation History</h3>
+    <!-- History Slide-over Panel -->
+    <div id="historyPanel" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-4 transition-transform translate-y-full duration-300 flex flex-col z-20">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+        <h3 class="font-bold text-slate-200 text-base">Calculation History</h3>
         <div class="flex items-center gap-3">
-          <button onclick="clearHistory()" class="text-xs text-red-400 hover:underline">Clear All</button>
-          <button onclick="toggleHistory()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+          <button id="clearHistoryBtn" class="text-xs text-red-400 hover:underline">Clear All</button>
+          <button id="closeHistoryBtn" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
       <div id="historyList" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2"></div>
