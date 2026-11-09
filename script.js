@@ -44,8 +44,8 @@ function appendDecimal() {
 }
 
 function appendConstant(symbol) {
-  if (symbol === 'π') currentExpression += 'Math.PI';
-  else if (symbol === 'e') currentExpression += 'Math.E';
+  if (symbol === 'π') currentExpression += 'π';
+  else if (symbol === 'e') currentExpression += 'e';
   else if (symbol === 'ϕ') currentExpression += '1.618033988749895';
   updateDisplay();
 }
@@ -62,9 +62,9 @@ function clearAll() {
 }
 
 function backspace() {
-  if (currentExpression.endsWith('Math.PI')) {
+  if (currentExpression.endsWith('π')) {
     currentExpression = currentExpression.slice(0, -7);
-  } else if (currentExpression.endsWith('Math.E')) {
+  } else if (currentExpression.endsWith('e')) {
     currentExpression = currentExpression.slice(0, -6);
   } else {
     currentExpression = currentExpression.slice(0, -1);
@@ -191,7 +191,7 @@ function prepareExpression(expr) {
           num = num * (Math.PI / 180);
           return `Math.${func}(${num})`;
         } else {
-          return `(Math.${func}(${arg}) * (180 / Math.PI))`;
+          return `(Math.${func}(${arg}) * (180 / π))`;
         }
       } else {
         return `Math.${func}(${arg})`;
