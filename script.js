@@ -2,39 +2,71 @@ document.addEventListener('DOMContentLoaded', () => {
   let isSecondFunc = false;
   let isHyp = false;
   let angleUnit = 'DEG';
-  let expr = '';
   let memoryValue = 0;
   let history = [];
 
-  const mainDisplay = document.getElementById('mainDisplay');
+  let expr = '0';
+  let cursorPos = 1;
+
+  const displayBefore = document.getElementById('displayBefore');
+  const displayAfter = document.getElementById('displayAfter');
   const expressionDisplay = document.getElementById('expressionDisplay');
   const angleUnitBtn = document.getElementById('angleUnitBtn');
   const hypBtn = document.getElementById('hypBtn');
   const secondFuncBtn = document.getElementById('secondFuncBtn');
   const historyPanel = document.getElementById('historyPanel');
   const historyList = document.getElementById('historyList');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const themeIcon = document.getElementById('themeIcon');
 
-  function updateDisplay() {
-    mainDisplay.textContent = expr || '0';
-  }
-
-  function appendVal(v) {
-    expr += v;
-    updateDisplay();
-  }
-
-  function appendOp(op) {
-    if (expr === '' && op === '-') {
-      expr += '-';
-    } else if (expr.length > 0) {
-      const last = expr.slice(-1);
-      if ('+-×÷%^'.includes(last)) {
-        expr = expr.slice(0, -1) + op;
-      } else {
-        expr += op;
-      }
+  // Theme Switching Logic
+  themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    
+    if (isDark) {
+      themeIcon.className = 'fa-solid fa-sun text-amber-500';
+    } else {
+      themeIcon.className = 'fa-solid fa-moon text-indigo-600';
     }
-    updateDisplay();
+  });
+
+  function renderDisplay() {
+    if (expr === '') {
+      expr = '0';
+      cursorPos = 1;
+    }
+    cursorPos = Math.max(0, Math.min(cursorPos, expr.length));
+
+    displayBefore.textContent = expr.slice(0, cursorPos);
+    displayAfter.textContent = expr.slice(cursorPos);
+  }
+
+  function insertText(str) {
+    if (expr === '0') {
+      expr = '';
+      cursorPos = 0;
+    }
+    expr = expr.slice(0, cursorPos) + str + expr.slice(cursorPos);
+    cursorPos += str.length;
+    renderDisplay();
+  }
+
+  function deleteBack() {
+    if (cursorPos > 0 && expr.length > 0) {
+      expr = expr.slice(0, cursorPos - 1) + expr.slice(cursorPos);
+      cursorPos--;
+    }
+    renderDisplay();
+  }
+
+  function moveCursor(direction) {
+    if (direction === 'left') {
+      cursorPos = Math.max(0, cursorPos - 1);
+    } else if (direction === 'right') {
+      cursorPos = Math.min(expr.length, cursorPos + 1);
+    }
+    renderDisplay();
   }
 
   function updateLabels() {
@@ -65,38 +97,23 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/e/g, 'Math.E')
       .replace(/ϕ/g, '1.618033988749895');
 
-    // Auto-balance/close unclosed parentheses (fixes log(9 or sin(30 errors)
     const openBrackets = (parsed.match(/\(/g) || []).length;
     const closeBrackets = (parsed.match(/\)/g) || []).length;
     if (openBrackets > closeBrackets) {
       parsed += ')'.repeat(openBrackets - closeBrackets);
     }
 
-    // Implicit multiplication patterns
     parsed = parsed.replace(/(\d)(\()|(\))(\d)|(\d)([a-zA-Z])/g, '$1$3$5*$2$4$6');
-
-    // Factorials
     parsed = parsed.replace(/(\d+)!/g, (_, num) => factorial(parseInt(num)));
-
-    // Exponents
     parsed = parsed.replace(/([0-9.Math.PIE]+)\^([0-9.Math.PIE]+)/g, 'Math.pow($1,$2)');
 
     const scope = {
       sin: (x) => Math.sin(angleUnit === 'DEG' ? x * (Math.PI / 180) : x),
       cos: (x) => Math.cos(angleUnit === 'DEG' ? x * (Math.PI / 180) : x),
       tan: (x) => Math.tan(angleUnit === 'DEG' ? x * (Math.PI / 180) : x),
-      asin: (x) => {
-        let res = Math.asin(x);
-        return angleUnit === 'DEG' ? res * (180 / Math.PI) : res;
-      },
-      acos: (x) => {
-        let res = Math.acos(x);
-        return angleUnit === 'DEG' ? res * (180 / Math.PI) : res;
-      },
-      atan: (x) => {
-        let res = Math.atan(x);
-        return angleUnit === 'DEG' ? res * (180 / Math.PI) : res;
-      },
+      asin: (x) => angleUnit === 'DEG' ? Math.asin(x) * (180 / Math.PI) : Math.asin(x),
+      acos: (x) => angleUnit === 'DEG' ? Math.acos(x) * (180 / Math.PI) : Math.acos(x),
+      atan: (x) => angleUnit === 'DEG' ? Math.atan(x) * (180 / Math.PI) : Math.atan(x),
       sinh: Math.sinh,
       cosh: Math.cosh,
       tanh: Math.tanh,
@@ -136,29 +153,38 @@ document.addEventListener('DOMContentLoaded', () => {
       renderHistory();
 
       expr = formatted;
-      updateDisplay();
+      cursorPos = expr.length;
+      renderDisplay();
     } catch (e) {
-      mainDisplay.textContent = 'Error';
-      setTimeout(updateDisplay, 1500);
+      expr = 'Error';
+      cursorPos = 5;
+      renderDisplay();
+      setTimeout(() => {
+        expr = '0';
+        cursorPos = 1;
+        renderDisplay();
+      }, 1500);
     }
   }
 
   function renderHistory() {
     historyList.innerHTML = history.map(item => `
-      <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer text-right transition history-item" data-res="${item.res}">
-        <div class="text-xs text-slate-400 font-mono-custom">${item.expr}</div>
-        <div class="text-base text-white font-mono-custom font-semibold">${item.res}</div>
+      <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer text-right transition history-item" data-res="${item.res}">
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-mono-custom">${item.expr}</div>
+        <div class="text-lg text-slate-800 dark:text-white font-mono-custom font-semibold">${item.res}</div>
       </div>
     `).join('');
 
     document.querySelectorAll('.history-item').forEach(el => {
       el.addEventListener('click', () => {
-        expr += el.dataset.res;
-        updateDisplay();
+        insertText(el.dataset.res);
         historyPanel.classList.add('translate-y-full');
       });
     });
   }
+
+  document.getElementById('navLeftBtn').addEventListener('click', () => moveCursor('left'));
+  document.getElementById('navRightBtn').addEventListener('click', () => moveCursor('right'));
 
   document.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -167,99 +193,89 @@ document.addEventListener('DOMContentLoaded', () => {
       const op = b.dataset.op;
       const action = b.dataset.action;
 
-      if (val) appendVal(val);
-      if (op) appendOp(op);
+      if (val) insertText(val);
+      if (op) insertText(op);
 
       if (action) {
         switch (action) {
           case 'clear':
-            expr = '';
+            expr = '0';
+            cursorPos = 1;
             expressionDisplay.textContent = '';
-            updateDisplay();
+            renderDisplay();
             break;
           case 'backspace':
-            expr = expr.slice(0, -1);
-            updateDisplay();
+            deleteBack();
             break;
           case 'equals':
             calculate();
             break;
           case 'dot':
-            const parts = expr.split(/[+\-×÷%^()]/);
-            if (!parts[parts.length - 1].includes('.')) appendVal('.');
+            insertText('.');
             break;
           case 'sign':
-            if (expr.startsWith('-')) expr = expr.slice(1);
-            else expr = '-' + expr;
-            updateDisplay();
+            if (expr.startsWith('-')) {
+              expr = expr.slice(1);
+              cursorPos = Math.max(0, cursorPos - 1);
+            } else {
+              expr = '-' + expr;
+              cursorPos++;
+            }
+            renderDisplay();
             break;
           case '2nd':
             isSecondFunc = !isSecondFunc;
             secondFuncBtn.classList.toggle('bg-amber-500', isSecondFunc);
-            secondFuncBtn.classList.toggle('text-slate-950', isSecondFunc);
+            secondFuncBtn.classList.toggle('text-white', isSecondFunc);
             updateLabels();
             break;
           case 'func-trig':
             let t = b.dataset.trig;
             if (isHyp) t += 'h';
             if (isSecondFunc) t = 'a' + t;
-            expr += t + '(';
-            updateDisplay();
+            insertText(t + '(');
             break;
           case 'func-power2':
-            expr += isSecondFunc ? '^3' : '^2';
-            updateDisplay();
+            insertText(isSecondFunc ? '^3' : '^2');
             break;
           case 'func-powery':
-            expr += '^';
-            updateDisplay();
+            insertText('^');
             break;
           case 'func-log':
-            expr += isSecondFunc ? 'pow(2,' : 'log(';
-            updateDisplay();
+            insertText(isSecondFunc ? 'pow(2,' : 'log(');
             break;
           case 'func-ln':
-            expr += isSecondFunc ? 'exp(' : 'ln(';
-            updateDisplay();
+            insertText(isSecondFunc ? 'exp(' : 'ln(');
             break;
           case 'func-root':
-            expr += isSecondFunc ? 'cbrt(' : 'sqrt(';
-            updateDisplay();
+            insertText(isSecondFunc ? 'cbrt(' : 'sqrt(');
             break;
           case 'func-tenpow':
-            expr += isSecondFunc ? 'pow(2,' : 'pow(10,';
-            updateDisplay();
+            insertText(isSecondFunc ? 'pow(2,' : 'pow(10,');
             break;
           case 'func-fact':
-            expr += '!';
-            updateDisplay();
+            insertText('!');
             break;
           case 'func-recip':
-            expr += '1/(';
-            updateDisplay();
+            insertText('1/(');
             break;
           case 'func-abs':
-            expr += 'abs(';
-            updateDisplay();
+            insertText('abs(');
             break;
           case 'const-pi':
-            expr += 'π';
-            updateDisplay();
+            insertText('π');
             break;
           case 'const-e':
-            expr += 'e';
-            updateDisplay();
+            insertText('e');
             break;
           case 'const-phi':
-            expr += 'ϕ';
-            updateDisplay();
+            insertText('ϕ');
             break;
           case 'rand':
-            expr += Math.random().toFixed(4);
-            updateDisplay();
+            insertText(Math.random().toFixed(4));
             break;
           case 'mc': memoryValue = 0; break;
-          case 'mr': expr += memoryValue; updateDisplay(); break;
+          case 'mr': insertText(memoryValue.toString()); break;
           case 'm-add': try { memoryValue += evaluateExpression(expr); } catch(err){} break;
           case 'm-sub': try { memoryValue -= evaluateExpression(expr); } catch(err){} break;
           case 'ms': try { memoryValue = evaluateExpression(expr); } catch(err){} break;
@@ -275,9 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   hypBtn.addEventListener('click', () => {
     isHyp = !isHyp;
-    hypBtn.classList.toggle('bg-slate-800', !isHyp);
-    hypBtn.classList.toggle('bg-purple-900/60', isHyp);
-    hypBtn.classList.toggle('text-purple-300', isHyp);
+    hypBtn.classList.toggle('bg-purple-600', isHyp);
+    hypBtn.classList.toggle('text-white', isHyp);
     updateLabels();
   });
 
@@ -295,24 +310,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') appendVal(e.key);
-    if (e.key === '.') appendVal('.');
-    if (e.key === '+') appendOp('+');
-    if (e.key === '-') appendOp('-');
-    if (e.key === '*') appendOp('×');
-    if (e.key === '/') appendOp('÷');
-    if (e.key === '%') appendOp('%');
-    if (e.key === '^') appendOp('^');
-    if (e.key === '(' || e.key === ')') appendVal(e.key);
+    if (e.key === 'ArrowLeft') moveCursor('left');
+    if (e.key === 'ArrowRight') moveCursor('right');
+    if (e.key >= '0' && e.key <= '9') insertText(e.key);
+    if (e.key === '.') insertText('.');
+    if (e.key === '+') insertText('+');
+    if (e.key === '-') insertText('-');
+    if (e.key === '*') insertText('×');
+    if (e.key === '/') insertText('÷');
+    if (e.key === '%') insertText('%');
+    if (e.key === '^') insertText('^');
+    if (e.key === '(' || e.key === ')') insertText(e.key);
     if (e.key === 'Enter' || e.key === '=') calculate();
-    if (e.key === 'Backspace') {
-      expr = expr.slice(0, -1);
-      updateDisplay();
-    }
+    if (e.key === 'Backspace') deleteBack();
     if (e.key === 'Escape') {
-      expr = '';
+      expr = '0';
+      cursorPos = 1;
       expressionDisplay.textContent = '';
-      updateDisplay();
+      renderDisplay();
     }
   });
+
+  renderDisplay();
 });
