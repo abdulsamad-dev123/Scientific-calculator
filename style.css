@@ -2,15 +2,65 @@
 
 html, body {
   width: 100%;
-  height: 100%;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
   font-family: 'Inter', sans-serif;
 }
 
 .font-mono-custom {
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* Calculator container occupies 95% of viewport height and adapts cleanly */
+.calc-shell {
+  width: 94%;
+  height: 95dvh;
+  max-height: 95dvh;
+  }
+
+@media (min-width: 768px) {
+  .calc-shell {
+    width: 85%;
+    max-width: 900px;
+  }
+}
+
+/* Responsive display sizing */
+.display-box {
+  height: clamp(4.75rem, 15dvh, 7.5rem);
+}
+
+.main-readout {
+  font-size: clamp(1.5rem, 4.5dvh, 2.75rem);
+  line-height: 1.2;
+}
+
+/* Portrait layout: 5 columns x 9 rows */
+.keypad-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(9, minmax(0, 1fr));
+}
+
+/* Landscape layout (wide/short screens): 9 columns x 5 rows so buttons remain roomy */
+@media (orientation: landscape) and (max-height: 600px) {
+  .calc-shell {
+    width: 95%;
+    height: 85dvh;
+  }
+  .display-box {
+    height: 4.25rem;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.4rem;
+  }
+  .main-readout {
+    font-size: 1.6rem;
+  }
+  .keypad-grid {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+  }
 }
 
 .glass-panel {
@@ -29,6 +79,9 @@ body:not(.dark) .glass-panel {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
   transition: all 0.1s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -53,6 +106,7 @@ body:not(.dark) .glass-panel {
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
+  height: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
