@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Scientific Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -13,118 +13,118 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark w-screen h-screen m-0 p-0 overflow-hidden bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-200">
+<body class="dark w-full min-h-[100dvh] m-0 p-2 sm:p-4 bg-slate-200 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex items-center justify-center transition-colors duration-200">
 
-  <div class="relative w-full h-full p-3 sm:p-5 flex flex-col justify-between glass-panel">
+  <!-- Main Calculator Shell (Occupies 95% of viewport height and adapts to screen size/orientation) -->
+  <div class="calc-shell relative w-full max-w-4xl rounded-3xl p-3 sm:p-4 flex flex-col justify-between glass-panel shadow-2xl border border-slate-300 dark:border-slate-800 overflow-hidden">
     
     <!-- Top Bar Controls -->
-    <div class="flex items-center justify-between mb-2 text-xs sm:text-sm font-semibold tracking-wider">
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button id="angleUnitBtn" class="px-3 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition">
+    <div class="flex items-center justify-between mb-1.5 sm:mb-2 text-xs sm:text-sm font-semibold tracking-wider shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button id="angleUnitBtn" class="px-2.5 sm:px-3 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition">
           DEG
         </button>
-        <button id="hypBtn" class="px-3 py-1 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
+        <button id="hypBtn" class="px-2.5 sm:px-3 py-1 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
           HYP
         </button>
       </div>
 
       <!-- Controls: Theme Toggle, Navigation Arrows, History -->
-      <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-        <!-- Dark/Light Theme Toggle -->
-        <button id="themeToggleBtn" title="Toggle Theme" class="px-3 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
+      <div class="flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-300">
+        <button id="themeToggleBtn" title="Toggle Theme" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
           <i id="themeIcon" class="fa-solid fa-sun text-amber-500"></i>
         </button>
 
-        <button id="navLeftBtn" title="Move Cursor Left" class="px-3 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
-          <i class="fa-solid fa-chevron-left"></i> ◄
+        <button id="navLeftBtn" title="Move Cursor Left" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
+          ◄
         </button>
-        <button id="navRightBtn" title="Move Cursor Right" class="px-3 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
-          ► <i class="fa-solid fa-chevron-right"></i>
+        <button id="navRightBtn" title="Move Cursor Right" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition">
+          ►
         </button>
         <button id="historyToggleBtn" title="History" class="p-1.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 transition">
-          <i class="fa-solid fa-clock-rotate-left text-base"></i>
+          <i class="fa-solid fa-clock-rotate-left text-sm sm:text-base"></i>
         </button>
       </div>
     </div>
 
     <!-- Display Screen with Visual Cursor -->
-    <div class="bg-white/80 dark:bg-slate-900/90 rounded-2xl p-4 mb-3 border border-slate-300 dark:border-slate-800 shadow-inner flex flex-col justify-between h-32 sm:h-36 relative overflow-hidden transition-colors duration-200">
-      <div id="expressionDisplay" class="font-mono-custom text-slate-500 dark:text-slate-400 text-sm overflow-x-auto whitespace-nowrap text-right custom-scrollbar h-6"></div>
+    <div class="display-box bg-white/80 dark:bg-slate-900/90 rounded-2xl px-3 py-2 sm:p-4 mb-2 sm:mb-3 border border-slate-300 dark:border-slate-800 shadow-inner flex flex-col justify-between shrink-0 relative overflow-hidden transition-colors duration-200">
+      <div id="expressionDisplay" class="font-mono-custom text-slate-500 dark:text-slate-400 text-xs sm:text-sm overflow-x-auto whitespace-nowrap text-right custom-scrollbar h-5"></div>
       
       <!-- Visual Display Container -->
-      <div id="displayContainer" class="w-full font-mono-custom text-slate-900 dark:text-white text-3xl sm:text-5xl font-bold tracking-tight text-right overflow-x-auto whitespace-nowrap custom-scrollbar py-1">
+      <div id="displayContainer" class="main-readout w-full font-mono-custom text-slate-900 dark:text-white font-bold tracking-tight text-right overflow-x-auto whitespace-nowrap custom-scrollbar">
         <span id="displayBefore"></span><span id="cursor" class="blinking-cursor">|</span><span id="displayAfter"></span>
       </div>
     </div>
 
-    <!-- Keypad Grid -->
-    <div class="grid grid-cols-5 gap-1.5 sm:gap-2 flex-1 text-sm sm:text-base font-medium">
+    <!-- Responsive Keypad Grid (5 cols in Portrait, 9 cols in Landscape) -->
+    <div class="keypad-grid grid flex-1 min-h-0 gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base font-medium">
       
-      <!-- Row 0: Memory Keys -->
-      <button data-action="mc" class="btn-calc rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MC</button>
-      <button data-action="mr" class="btn-calc rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MR</button>
-      <button data-action="m-add" class="btn-calc rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">M+</button>
-      <button data-action="m-sub" class="btn-calc rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">M-</button>
-      <button data-action="ms" class="btn-calc rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MS</button>
+      <!-- Memory Keys -->
+      <button data-action="mc" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MC</button>
+      <button data-action="mr" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MR</button>
+      <button data-action="m-add" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">M+</button>
+      <button data-action="m-sub" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">M-</button>
+      <button data-action="ms" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800">MS</button>
 
       <!-- Row 1 -->
-      <button id="secondFuncBtn" data-action="2nd" class="btn-calc rounded-2xl bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/50">2nd</button>
-      <button data-action="const-pi" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">π</button>
-      <button data-action="const-e" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">e</button>
-      <button data-action="clear" class="btn-calc rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/50">AC</button>
-      <button data-action="backspace" class="btn-calc rounded-2xl bg-red-100 dark:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/40"><i class="fa-solid fa-backspace"></i></button>
+      <button id="secondFuncBtn" data-action="2nd" class="btn-calc rounded-xl sm:rounded-2xl bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/50">2nd</button>
+      <button data-action="const-pi" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">π</button>
+      <button data-action="const-e" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">e</button>
+      <button data-action="clear" class="btn-calc rounded-xl sm:rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/50">AC</button>
+      <button data-action="backspace" class="btn-calc rounded-xl sm:rounded-2xl bg-red-100 dark:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/40"><i class="fa-solid fa-backspace"></i></button>
 
       <!-- Row 2 -->
-      <button id="btnSin" data-action="func-trig" data-trig="sin" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">sin</button>
-      <button id="btnCos" data-action="func-trig" data-trig="cos" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">cos</button>
-      <button id="btnTan" data-action="func-trig" data-trig="tan" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">tan</button>
-      <button data-val="(" class="btn-calc rounded-2xl bg-slate-200/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-700/60">(</button>
-      <button data-val=")" class="btn-calc rounded-2xl bg-slate-200/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-700/60">)</button>
+      <button id="btnSin" data-action="func-trig" data-trig="sin" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">sin</button>
+      <button id="btnCos" data-action="func-trig" data-trig="cos" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">cos</button>
+      <button id="btnTan" data-action="func-trig" data-trig="tan" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">tan</button>
+      <button data-val="(" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-700/60">(</button>
+      <button data-val=")" class="btn-calc rounded-xl sm:rounded-2xl bg-slate-200/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/50 hover:bg-slate-300 dark:hover:bg-slate-700/60">)</button>
 
       <!-- Row 3 -->
-      <button id="btnPower2" data-action="func-power2" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">x²</button>
-      <button id="btnPowerY" data-action="func-powery" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">x^y</button>
-      <button id="btnLog" data-action="func-log" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">log</button>
-      <button id="btnLn" data-action="func-ln" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">ln</button>
-      <button data-op="%" class="btn-calc rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">%</button>
+      <button id="btnPower2" data-action="func-power2" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">x²</button>
+      <button id="btnPowerY" data-action="func-powery" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">x^y</button>
+      <button id="btnLog" data-action="func-log" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">log</button>
+      <button id="btnLn" data-action="func-ln" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">ln</button>
+      <button data-op="%" class="btn-calc rounded-xl sm:rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">%</button>
 
       <!-- Row 4 -->
-      <button id="btnRoot" data-action="func-root" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">√x</button>
-      <button data-val="7" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">7</button>
-      <button data-val="8" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">8</button>
-      <button data-val="9" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">9</button>
-      <button data-op="÷" class="btn-calc rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">÷</button>
+      <button id="btnRoot" data-action="func-root" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">√x</button>
+      <button data-val="7" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">7</button>
+      <button data-val="8" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">8</button>
+      <button data-val="9" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">9</button>
+      <button data-op="÷" class="btn-calc rounded-xl sm:rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">÷</button>
 
       <!-- Row 5 -->
-      <button data-action="func-fact" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">n!</button>
-      <button data-val="4" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">4</button>
-      <button data-val="5" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">5</button>
-      <button data-val="6" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">6</button>
-      <button data-op="×" class="btn-calc rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">×</button>
+      <button data-action="func-fact" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">n!</button>
+      <button data-val="4" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">4</button>
+      <button data-val="5" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">5</button>
+      <button data-val="6" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">6</button>
+      <button data-op="×" class="btn-calc rounded-xl sm:rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">×</button>
 
       <!-- Row 6 -->
-      <button onclick="" data-action="func-recip" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">1/x</button>
-      <button data-val="1" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">1</button>
-      <button data-val="2" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">2</button>
-      <button data-val="3" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">3</button>
-      <button data-op="-" class="btn-calc rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">-</button>
+      <button data-action="func-recip" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">1/x</button>
+      <button data-val="1" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">1</button>
+      <button data-val="2" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">2</button>
+      <button data-val="3" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">3</button>
+      <button data-op="-" class="btn-calc rounded-xl sm:rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">-</button>
 
       <!-- Row 7 -->
-      <button data-action="func-abs" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">|x|</button>
-      <button data-action="sign" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">±</button>
-      <button data-val="0" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">0</button>
-      <button data-action="dot" class="btn-calc rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">.</button>
-      <button data-op="+" class="btn-calc rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">+</button>
+      <button data-action="func-abs" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">|x|</button>
+      <button data-action="sign" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">±</button>
+      <button data-val="0" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">0</button>
+      <button data-action="dot" class="btn-calc rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700/50 border border-slate-300 dark:border-slate-700/40">.</button>
+      <button data-op="+" class="btn-calc rounded-xl sm:rounded-2xl bg-cyan-100 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-900/40 hover:bg-cyan-200 dark:hover:bg-cyan-900/50">+</button>
 
       <!-- Row 8 -->
-      <button data-action="const-phi" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">ϕ</button>
-      <button data-action="rand" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">Rand</button>
-      <button id="btnTenPower" data-action="func-tenpow" class="btn-calc rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">10ⁿ</button>
-      <button data-action="equals" class="btn-calc col-span-2 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-600/30">=</button>
+      <button data-action="const-phi" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">ϕ</button>
+      <button data-action="rand" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">Rand</button>
+      <button id="btnTenPower" data-action="func-tenpow" class="btn-calc rounded-xl sm:rounded-2xl bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/50">10ⁿ</button>
+      <button data-action="equals" class="btn-calc col-span-2 rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-600/30">=</button>
     </div>
 
     <!-- History Panel -->
-    <div id="historyPanel" class="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md p-6 transition-transform translate-y-full duration-300 flex flex-col z-20">
+    <div id="historyPanel" class="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md p-4 sm:p-6 transition-transform translate-y-full duration-300 flex flex-col z-20">
       <div class="flex items-center justify-between border-b border-slate-300 dark:border-slate-800 pb-3 mb-4">
         <h3 class="font-bold text-slate-800 dark:text-slate-200 text-lg">Calculation History</h3>
         <div class="flex items-center gap-4">
@@ -138,4 +138,4 @@
 
   <script src="script.js"></script>
 </body>
-  </html>
+        </html>
